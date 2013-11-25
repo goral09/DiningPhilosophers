@@ -90,8 +90,9 @@ void *start_eating(void *philosopher){
     {
 
         phil -> acquireForks();
-        if(phil -> hasBothForks() == 1)
+        if(phil -> hasBothForks() == 1){
             phil -> iAmEating();
+        }
     }
     //End timer
     double value = stopTimer( spec );

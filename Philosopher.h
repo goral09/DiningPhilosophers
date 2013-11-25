@@ -17,6 +17,8 @@ class Philosopher
         void acquireForks();
         void iAmEating();
         bool hasBothForks();
+        void lockForks();
+        void releaseForks();
     protected:
     	Fork* giveLeftFork();
         Fork* giveRightFork();

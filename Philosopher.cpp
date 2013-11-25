@@ -21,6 +21,7 @@ Philosopher::Philosopher(int _id2, Fork* leftFork2)
 	full = false;
 	leftNeighbour = NULL;
 	rightNeighbour = NULL;
+	leftFork -> lock();
 }
 
 Philosopher::~Philosopher()
@@ -50,6 +51,7 @@ Fork* Philosopher::giveLeftFork()
 	if(leftFork -> isDirty() == 1){
 		leftFork -> setAsClean();
 		Fork* tmp = leftFork;
+		(*leftFork).unlock();
 		leftFork = NULL;
 		return tmp;
 	}
@@ -62,21 +64,38 @@ Fork* Philosopher::giveRightFork()
 	if(rightFork -> isDirty() == 1){
 		rightFork -> setAsClean();
 		Fork* tmp = rightFork;
+		(*rightFork).unlock();
 		rightFork = NULL;
 		return tmp;
 	}
 	else
 		return NULL;
 }
+void Philosopher::lockForks(){
+	//printf("Locking left fork\n");
+	int resLockLeft = leftFork -> lock();
+	if( resLockLeft != 0) 
+		printf("Problem with locking left fork: %d\n", resLockLeft);
+	int resLockRight = rightFork -> lock();
+	//printf("Locking right fork\n");
+	if(resLockRight != 0)
+		printf("Problem with locking left fork: %d\n", resLockRight);
+}
 
+void Philosopher::releaseForks(){
+	leftFork -> unlock();
+	rightFork -> unlock();
+}
 void Philosopher::takeLeftFork()
 {
 	leftFork = leftNeighbour -> giveRightFork();
+	int resLeftLock = leftFork -> lock();
 }
 
 void Philosopher::takeRightFork()
 {
 	rightFork = rightNeighbour -> giveLeftFork();
+	int resRightLock = rightFork -> lock();
 }
 void Philosopher::acquireForks()
 {
@@ -95,7 +114,7 @@ void Philosopher::acquireForks()
 }
 
 void Philosopher::iAmEating()
-{
+{;
 	//printf("\nPhilosopher %d is eating...", _id);
 	//printf("\tPhilosopher %d is done eating.\t", _id);
 	if(rightFork != NULL) rightFork -> setAsDirty();
