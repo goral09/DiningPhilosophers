@@ -15,7 +15,7 @@ public:
 	virtual ~Fork();
 	int lock();
 	int tryLock();
-	int unlock();
+	//int unlock();
 protected:
 private:
 	int _id;

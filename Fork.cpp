@@ -41,6 +41,6 @@ int Fork::tryLock(){
 	return pthread_mutex_trylock(&mutex);
 }
 
-int Fork::unlock(){
-	return pthread_mutex_unlock(&mutex);
-}
+//int Fork::unlock(){
+//	return pthread_mutex_unlock(&mutex);
+//}

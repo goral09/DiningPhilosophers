@@ -82,10 +82,10 @@ void Philosopher::lockForks(){
 		printf("Problem with locking left fork: %d\n", resLockRight);
 }
 
-void Philosopher::releaseForks(){
-	leftFork -> unlock();
-	rightFork -> unlock();
-}
+//void Philosopher::releaseForks(){
+	//leftFork -> unlock();
+	//rightFork -> unlock();
+//}
 void Philosopher::takeLeftFork()
 {
 	leftFork = leftNeighbour -> giveRightFork();
