@@ -21,8 +21,8 @@ bool Fork::isDirty()
 	return !isClean;
 }
 void Fork::setAsClean() {
-	isClean = true;
 	pthread_mutex_unlock(&mutex);
+	isClean = true;	
 }
 
 void Fork::setAsDirty() {

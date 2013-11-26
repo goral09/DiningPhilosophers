@@ -107,7 +107,7 @@ void *start_eating(void *philosopher){
 
     double waiting = 0;
 
-    while(phil -> isDoneEating() == 0)
+    while(phil -> isDoneEating() == false)
     {
 
         phil -> acquireForks();
@@ -115,6 +115,7 @@ void *start_eating(void *philosopher){
             waiting = stopTimer(waitingTime);
             phil -> iAmEating();
         }
+        
     }
 
     //End timer

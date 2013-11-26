@@ -40,20 +40,25 @@ int Philosopher::sayYourNameBitch()
 }
 void Philosopher::setLeftNeighbour(Philosopher* left)
 {
-	leftNeighbour = left;
+	if(left != NULL)
+		leftNeighbour = left;
 }
 void Philosopher::setRightNeighbour(Philosopher* right)
 {
-	rightNeighbour = right;
+	if(right != NULL)
+		rightNeighbour = right;
 }
 Fork* Philosopher::giveLeftFork()
 {
-	if((leftFork -> isDirty()) == true){
-		leftFork -> setAsClean();
-		Fork* tmp = leftFork;
-		//(*leftFork).unlock();
-		leftFork = NULL;
-		return tmp;
+	Fork* tmp = NULL;
+	if(leftFork != NULL) {
+		if((leftFork -> isDirty()) == true){
+			leftFork -> setAsClean();
+			tmp = leftFork;
+			//(*leftFork).unlock();
+			leftFork = NULL;
+			return tmp;
+		}
 	}
 	else
 		return NULL;
@@ -61,12 +66,15 @@ Fork* Philosopher::giveLeftFork()
 
 Fork* Philosopher::giveRightFork()
 {
-	if((rightFork -> isDirty()) == true){
-		rightFork -> setAsClean();
-		Fork* tmp = rightFork;
-		//(*rightFork).unlock();
-		rightFork = NULL;
-		return tmp;
+	Fork* tmp = NULL;
+	if(rightFork != NULL) {
+		if((rightFork -> isDirty()) == true){
+			rightFork -> setAsClean();
+			tmp = rightFork;
+			//(*rightFork).unlock();
+			rightFork = NULL;
+			return tmp;
+		}
 	}
 	else
 		return NULL;
@@ -88,14 +96,16 @@ void Philosopher::lockForks(){
 //}
 void Philosopher::takeLeftFork()
 {
-	leftFork = leftNeighbour -> giveRightFork();
+	if(leftFork == NULL && leftNeighbour != NULL)
+		leftFork = leftNeighbour -> giveRightFork();
 	//int resLeftLock = leftFork -> lock();
 	//printf("Left fork lock %d\n", resLeftLock );
 }
 
 void Philosopher::takeRightFork()
 {
-	rightFork = rightNeighbour -> giveLeftFork();
+	if(rightFork == NULL && rightNeighbour != NULL)
+		rightFork = rightNeighbour -> giveLeftFork();
 	//int resRightLock = rightFork -> lock();
 	//printf("Right fork lock %d\n", resRightLock );
 }
