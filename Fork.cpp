@@ -13,7 +13,7 @@ Fork:: Fork(){
 }
 Fork::~Fork()
 {
-
+	pthread_mutex_destroy(&mutex);
 }
 
 bool Fork::isDirty() 
@@ -22,6 +22,7 @@ bool Fork::isDirty()
 }
 void Fork::setAsClean() {
 	isClean = true;
+	pthread_mutex_unlock(&mutex);
 }
 
 void Fork::setAsDirty() {

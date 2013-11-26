@@ -16,18 +16,26 @@ using namespace std;
 #define NUM_PHIL 5
 #define NUM_FORKS 5
 #define NUM_GAMES 10
+#define SLEEPING_TIME 5
 
 void *start_eating(void *philosopher);
 double stopTimer( timespec * spec );
 timespec * startTimer();
 
+float maxWaitingTime;
+float avgTime;
+int iteration;
+float sum;
+
 int main()
 {
 
     pthread_t threads[NUM_PHIL];
-    
+    iteration = 0;
+    maxWaitingTime = -100;
+    sum = 0;
 
-    for(int i = 0 ; i < 10 ; i++){
+    for(int i = 0 ; i < 1 ; i++){
         
         Fork* fork1 = new Fork(1, false);
         Fork* fork2 = new Fork(2, false);
@@ -63,11 +71,16 @@ int main()
         iret4 = pthread_create(&threads[3], NULL, start_eating, (void*) phil4);
         iret5 = pthread_create(&threads[4], NULL, start_eating, (void*) phil5);
 
-        pthread_join( threads[0], NULL);
-        pthread_join( threads[1], NULL);
-        pthread_join( threads[2], NULL);
-        pthread_join( threads[3], NULL);
-        pthread_join( threads[4], NULL);
+        if(iret1 != 0 && iret2 != 0 && iret3 != 0 && iret4 != 0 && iret5 != 0){
+            printf("There was an error while creating threads\n");
+            break;
+        }
+
+        pthread_join( threads[0], NULL );
+        pthread_join( threads[1], NULL );
+        pthread_join( threads[2], NULL );
+        pthread_join( threads[3], NULL );
+        pthread_join( threads[4], NULL );
 
         /*printf("\nThread 1 returns: %d",iret1);
         printf("\nThread 2 returns: %d",iret2);
@@ -79,25 +92,38 @@ int main()
     
     //printf("\nList size: %d\n", times.size());
     //printf("\nMax time: %f.", max_element(times, times + 7));
+    printf("\n\nSleeping time: %ds\n", SLEEPING_TIME );
+    printf("Max waiting time: %.8f\n", maxWaitingTime);
+    float avg = sum/iteration;
+    printf("Avg waiting time: %f\n", avg);
     return 0;
 }
 
 void *start_eating(void *philosopher){
     Philosopher* phil = (Philosopher*) philosopher;
     //Start timer
-    timespec * spec = startTimer();
+    //timespec * spec = startTimer();
+    timespec * waitingTime = startTimer();
+
+    double waiting = 0;
+
     while(phil -> isDoneEating() == 0)
     {
 
         phil -> acquireForks();
-        if(phil -> hasBothForks() == 1){
+        if(phil -> hasBothForks() == true){
+            waiting = stopTimer(waitingTime);
             phil -> iAmEating();
         }
     }
+
     //End timer
-    double value = stopTimer( spec );
-    //times.push_back(value);
-    printf("\nPhilosopher #%d was eating %.8f", phil -> sayYourNameBitch(), value);
+    //double value = stopTimer( spec );
+    if(waiting > maxWaitingTime) maxWaitingTime = waiting;
+    sum += waiting;
+    iteration += 1;
+
+    printf("\nPhilosopher #%d was waiting %.8f", phil -> sayYourNameBitch(), waiting);
     phil = NULL;
 }
 
